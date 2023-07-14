@@ -28,6 +28,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // save new task
+  void saveNewTask() {
+    setState(() {
+      toDoList.add([_controller.text, false]);
+      // 保存後、textfieldに残った履歴を削除
+      _controller.clear();
+    });
+    // 保存した後にdialogを消す処理
+    Navigator.of(context).pop();
+  }
+
   // create a new task
   void createNewTask() {
     showDialog(
@@ -35,6 +46,10 @@ class _HomePageState extends State<HomePage> {
       builder: (context) {
         return DialogBox(
           controller: _controller,
+          // セーブボタンが押された時の処理
+          onSave: saveNewTask,
+          // キャンセルボタンが押された時の処理
+          onCancel: () => Navigator.of(context).pop(),
         );
       },
     );
