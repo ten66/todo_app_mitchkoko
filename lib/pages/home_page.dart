@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app_mitchkoko/util/dialog_box.dart';
 
 import '../util/todo_tile.dart';
 
@@ -10,6 +11,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // text contoller
+  final _controller = TextEditingController();
+
   // todoタスクのリスト
   List toDoList = [
     ['Make Tutorial', false],
@@ -24,6 +28,18 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // create a new task
+  void createNewTask() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogBox(
+          controller: _controller,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +51,10 @@ class _HomePageState extends State<HomePage> {
         title: Text('TO DO'),
         // appbarの境界をなくす
         elevation: 0,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: createNewTask,
+        child: Icon(Icons.add),
       ),
       // ListViewとは？
       // ListViewとListView.builderの違い
