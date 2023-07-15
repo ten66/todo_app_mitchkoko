@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todo_app_mitchkoko/util/dialog_box.dart';
 
 import '../util/todo_tile.dart';
@@ -11,6 +12,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // reference the hive box
+  final _myBox = Hive.openBox('mybox');
+
   // text contoller
   final _controller = TextEditingController();
 
