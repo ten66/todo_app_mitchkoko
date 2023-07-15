@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:todo_app_mitchkoko/data/datapase.dart';
 import 'package:todo_app_mitchkoko/util/dialog_box.dart';
 
 import '../util/todo_tile.dart';
@@ -13,34 +14,44 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // reference the hive box
-  final _myBox = Hive.openBox('mybox');
+  final _myBox = Hive.box('mybox');
+  ToDoDataBase db = ToDoDataBase();
+
+  @override
+  void initState() {
+    // if this is the 1st time ever opening the app, then create default data
+    if (_myBox.get('TODOLIST') == null) {
+      db.createInitialdata();
+    } else {
+      // there already exists data
+      db.loadData();
+    }
+
+    super.initState();
+  }
 
   // text contoller
   final _controller = TextEditingController();
-
-  // todoタスクのリスト
-  List toDoList = [
-    ['Make Tutorial', false],
-    ['Do Exercise', false],
-  ];
 
   // checkboxがタップされた時
   void checkBoxChanged(bool? value, int index) {
     setState(() {
       // なぜこれだけでタップするとチェックマークが付くのか(!に意味があるのかも)
-      toDoList[index][1] = !toDoList[index][1];
+      db.toDoList[index][1] = !db.toDoList[index][1];
     });
+    db.updateDataBase();
   }
 
   // save new task
   void saveNewTask() {
     setState(() {
-      toDoList.add([_controller.text, false]);
+      db.toDoList.add([_controller.text, false]);
       // 保存後、textfieldに残った履歴を削除
       _controller.clear();
     });
     // 保存した後にdialogを消す処理
     Navigator.of(context).pop();
+    db.updateDataBase();
   }
 
   // create a new task
@@ -62,8 +73,9 @@ class _HomePageState extends State<HomePage> {
   // delete task
   void deleteTask(int index) {
     setState(() {
-      toDoList.removeAt(index);
+      db.toDoList.removeAt(index);
     });
+    db.updateDataBase();
   }
 
   @override
@@ -86,11 +98,11 @@ class _HomePageState extends State<HomePage> {
       // ListViewとListView.builderの違い
       body: ListView.builder(
         // ListViewのitemCountとは
-        itemCount: toDoList.length,
+        itemCount: db.toDoList.length,
         itemBuilder: (context, index) {
           return ToDoTile(
-            taskName: toDoList[index][0],
-            taskCompleted: toDoList[index][1],
+            taskName: db.toDoList[index][0],
+            taskCompleted: db.toDoList[index][1],
             onChanged: (value) => checkBoxChanged(value, index),
             deleteFunction: (context) => deleteTask(index),
           );
