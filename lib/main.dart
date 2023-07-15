@@ -7,7 +7,7 @@ void main() async {
   await Hive.initFlutter();
 
   // open a box
-  var box = await Hive.openBox('mybox');
+  await Hive.openBox('mybox');
 
   runApp(const MyApp());
 }
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       // 右上のDebugバナーを削除する方法
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: const HomePage(),
       theme: ThemeData(primarySwatch: Colors.yellow),
     );
   }
